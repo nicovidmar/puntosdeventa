@@ -1,0 +1,51 @@
+version: '3.8'
+
+networks:
+  redis-network:
+    external: true
+
+services:
+  app:
+    build: .
+    ports:
+      - "8081:8081"
+      - "5006:5006"  # Exponer el puerto del depurador
+    environment:
+      - redis.url=redis://external-redis:6379
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:adminpassword@accreditation-mongo:27017/accreditation?authSource=admin
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006  # Habilitar Debug remoto
+      - jwt.secret-key=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - app-logs:/logs
+  mongo:
+    image: mongo:6.0
+    container_name: accreditation-mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-secondary-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: accreditation
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
+    networks:
+      - redis-network
+  redis:
+    image: redis:latest
+    container_name: external-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - redis-network
+
+volumes:
+  mongo-secondary-data:
+  app-logs:

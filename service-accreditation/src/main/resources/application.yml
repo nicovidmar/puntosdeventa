@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: service-accreditation
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI}
+  # Configuración JWT
+  jwt:
+    secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+#cache:
+#  sellingPoints:
+#    maxSize: 10000
+#    expireAfterWrite: 10000
+#  sellingCosts:
+#    maxSize: 10000
+#    expireAfterWrite: 10000
+server:
+  port: 8081
+
+logging:
+  file:
+    name: /logs/application.log
+    pattern:
+      file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    org.springframework.cache: DEBUG
+    org.springframework.security: DEBUG

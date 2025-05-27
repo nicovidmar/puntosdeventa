@@ -1,0 +1,7 @@
+{
+  "header": {
+    "code": 404,
+    "message": "Punto de Venta no encontrado"
+  },
+  "data": null
+}

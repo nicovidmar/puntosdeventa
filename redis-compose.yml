@@ -1,0 +1,14 @@
+version: '3.8'
+
+networks:
+  redis-network:
+    external: true  # Asegurarse de que la red es compartida
+
+services:
+  redis:
+    image: "redis:latest"
+    container_name: external-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - redis-network

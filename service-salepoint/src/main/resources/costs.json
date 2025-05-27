@@ -1,0 +1,17 @@
+[
+  { "id": { "pointA": 1, "pointB": 2 }, "cost": 2 },
+  { "id": { "pointA": 1, "pointB": 3 }, "cost": 3 },
+  { "id": { "pointA": 2, "pointB": 3 }, "cost": 5 },
+  { "id": { "pointA": 2, "pointB": 4 }, "cost": 10 },
+  { "id": { "pointA": 1, "pointB": 4 }, "cost": 11 },
+  { "id": { "pointA": 4, "pointB": 5 }, "cost": 5 },
+  { "id": { "pointA": 2, "pointB": 5 }, "cost": 14 },
+  { "id": { "pointA": 6, "pointB": 7 }, "cost": 32 },
+  { "id": { "pointA": 8, "pointB": 9 }, "cost": 11 },
+  { "id": { "pointA": 10, "pointB": 7 }, "cost": 5 },
+  { "id": { "pointA": 3, "pointB": 8 }, "cost": 10 },
+  { "id": { "pointA": 5, "pointB": 8 }, "cost": 30 },
+  { "id": { "pointA": 10, "pointB": 5 }, "cost": 5 },
+  { "id": { "pointA": 4, "pointB": 6 }, "cost": 6 }
+]
+

@@ -1,0 +1,10 @@
+{
+  "header": {
+    "code": 200,
+    "message": "Operación exitosa"
+  },
+  "data": {
+    "id": 101,
+    "name": "Punto de Venta 1"
+  }
+}

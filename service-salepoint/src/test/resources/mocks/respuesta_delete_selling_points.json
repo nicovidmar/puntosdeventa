@@ -1,0 +1,7 @@
+{
+  "header": {
+    "code": 200,
+    "message": "Operación exitosa"
+  },
+  "data": true
+}

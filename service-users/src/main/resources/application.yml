@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: service-users
+  # Configuración JWT
+  jwt:
+    secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+
+  datasource:
+    url: jdbc:h2:file:/data/h2/sellingpointsdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+
+    jpa:
+      database-platform: org.hibernate.dialect.H2Dialect
+      hibernate:
+        ddl-auto: update
+
+    h2:
+      console:
+        enabled: true
+        path: /h2-console  # Ruta para acceder a la consola
+#cache:
+#  sellingPoints:
+#    maxSize: 10000
+#    expireAfterWrite: 10000
+#  sellingCosts:
+#    maxSize: 10000
+#    expireAfterWrite: 10000
+server:
+  port: 8082
+
+logging:
+  file:
+    name: /logs/application.log
+    pattern:
+      file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  level:
+    org.springframework.cache: DEBUG
+    org.springframework.security: DEBUG

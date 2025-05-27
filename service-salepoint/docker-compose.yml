@@ -1,0 +1,51 @@
+version: '3.8'
+
+networks:
+  redis-network:
+    external: true
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Exponer el puerto del depurador
+    environment:
+      - redis.url=redis://external-redis:6379
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:adminpassword@mongo:27017/sellingpoints?authSource=admin
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005  # Habilitar Debug remoto
+      - jwt.secret-key=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    depends_on:
+      - mongo
+    volumes:
+      - h2-data:/data/h2
+      - app-logs:/logs
+    networks:
+      - redis-network
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
+  mongo:
+    image: mongo:6.0
+    container_name: sellingpoints-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - h2-data:/data/h2
+    environment:
+      MONGO_INITDB_DATABASE: sellingpoints
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
+
+volumes:
+  mongo-data:
+  h2-data:
+  app-logs:

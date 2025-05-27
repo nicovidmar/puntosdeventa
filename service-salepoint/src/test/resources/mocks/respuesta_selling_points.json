@@ -1,0 +1,52 @@
+{
+  "header": {
+    "code": 200,
+    "message": "Operación exitosa"
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "CABA"
+    },
+    {
+      "id": 2,
+      "name": "GBA_1"
+    },
+    {
+      "id": 3,
+      "name": "GBA_2"
+    },
+    {
+      "id": 4,
+      "name": "Santa Fe"
+    },
+    {
+      "id": 5,
+      "name": "Córdoba"
+    },
+    {
+      "id": 6,
+      "name": "Misiones"
+    },
+    {
+      "id": 7,
+      "name": "Salta"
+    },
+    {
+      "id": 8,
+      "name": "Chubut"
+    },
+    {
+      "id": 9,
+      "name": "Santa Cruz"
+    },
+    {
+      "id": 10,
+      "name": "Catamarca"
+    },
+    {
+      "id": 100,
+      "name": "Punto de Venta Actualizado"
+    }
+  ]
+}

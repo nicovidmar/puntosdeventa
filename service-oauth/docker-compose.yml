@@ -1,0 +1,29 @@
+version: '3.8'
+
+networks:
+  redis-network:
+    external: true
+
+services:
+  service-oauth:
+    build: .
+    ports:
+      - "9100:9100"
+      - "5069:5069"
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5069
+      - SPRING_PROFILES_ACTIVE=docker
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - app-logs:/logs
+    networks:
+      redis-network:
+        aliases:
+          - service-oauth
+
+volumes:
+  app-logs:

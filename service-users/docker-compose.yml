@@ -1,0 +1,39 @@
+version: '3.8'
+
+networks:
+  redis-network:
+    external: true
+
+services:
+  app:
+    build: .
+    ports:
+      - "8082:8082"
+      - "5008:5008"  # Exponer el puerto del depurador
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008  # Habilitar Debug remoto
+      - jwt.secret-key=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      # Configuración de H2
+      #- SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
+      - SPRING_DATASOURCE_URL=jdbc:h2:file:/data/h2/users_db
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.h2.Driver
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_DATABASE-PLATFORM=org.hibernate.dialect.H2Dialect
+      - SPRING_JPA_HIBERNATE_DDL-AUTO=update
+      - SPRING_H2_CONSOLE_ENABLED=true
+      - SPRING_H2_CONSOLE_SETTINGS_WEB-ALLOW-OTHERS=true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - h2-data:/data/h2
+      - app-logs:/logs
+    networks:
+      - redis-network
+
+volumes:
+  h2-data:
+  app-logs:
