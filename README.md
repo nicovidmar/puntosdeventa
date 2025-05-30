@@ -16,10 +16,15 @@ Validar entradas del usuario para evitar errores.
 
 #  Estructura
 teamcubation/
+
 ├── Main.java
+
 ├── InstrumentoFinanciero.java (abstracta)
+
 ├── Accion.java
+
 ├── Bono.java
+
 └── TipoInstrumento.java (enum)
 
 # Especificaciones Técnicas
