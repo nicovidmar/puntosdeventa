@@ -4,13 +4,13 @@ public enum TipoInstrumento {
 	ACCION("Accion"),
 	BONO("Bono");
 
-	private final String tipo;
+	private final String descripcion;
 
-	TipoInstrumento(String tipo) {
-        this.tipo = tipo;
+	TipoInstrumento(String descripcion) {
+        this.descripcion = descripcion;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getDescripcion() {
+        return descripcion;
     }
 }
