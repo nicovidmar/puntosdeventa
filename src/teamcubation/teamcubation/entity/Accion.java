@@ -1,4 +1,6 @@
-package teamcubation;
+package teamcubation.entity;
+
+import teamcubation.TipoInstrumento;
 
 public class Accion extends InstrumentoFinanciero {
 

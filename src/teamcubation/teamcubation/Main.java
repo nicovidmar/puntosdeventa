@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import teamcubation.entity.InstrumentoFinanciero;
+import teamcubation.menu.MenuUI;
+import teamcubation.service.InstrumentoService;
+
 
 public class Main {
 

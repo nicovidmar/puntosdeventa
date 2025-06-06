@@ -1,4 +1,6 @@
-package teamcubation;
+package teamcubation.entity;
+
+import teamcubation.TipoInstrumento;
 
 public abstract class InstrumentoFinanciero {
 	private String nombre;

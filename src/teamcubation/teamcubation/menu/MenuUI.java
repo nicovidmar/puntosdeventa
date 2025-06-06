@@ -1,4 +1,4 @@
-package teamcubation;
+package teamcubation.menu;
 
 public class MenuUI {
 	

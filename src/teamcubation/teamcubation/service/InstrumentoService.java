@@ -1,17 +1,18 @@
-package teamcubation;
+package teamcubation.service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import teamcubation.Accion;
-import teamcubation.Bono;
-import teamcubation.InstrumentoFinanciero;
 import teamcubation.TipoInstrumento;
- 
+import teamcubation.entity.Accion;
+import teamcubation.entity.Bono;
+import teamcubation.entity.InstrumentoFinanciero;
+import teamcubation.repository.Repositorio;
+
 public class InstrumentoService {
 
-	public static List<InstrumentoFinanciero> instrumentos = new ArrayList<>();
+	private static final Repositorio<InstrumentoFinanciero> repositorio = new Repositorio<>();
 	public static Scanner scanner = new Scanner(System.in);
 
 	public void consultarInstrumentos() {
@@ -22,26 +23,33 @@ public class InstrumentoService {
 
 		switch (opcion) {
 		case 1 -> {
+			List<InstrumentoFinanciero> instrumentos = repositorio.listarTodos();
 			if (instrumentos.isEmpty()) {
 				System.out.println("La lista de instrumentos está vacía");
 			} else {
 				System.out.println(instrumentos);
 			}
 		}
-		case 2 -> System.out.println(consultarPorNombre());
+		case 2 -> {
+			InstrumentoFinanciero instrumento = consultarPorNombre();
+			if (instrumento != null) {
+				System.out.println(instrumento);
+			}
+		}
 		default -> System.out.println("Opción inválida");
 		}
 	}
 
 	public void registrarInstrumento() {
+		InstrumentoFinanciero instrumento = null;
 		String nombre = "";
-		while (nombre.isBlank()) {
-			System.out.println("Nombre: ");
-			nombre = scanner.nextLine();
-			if (nombre.isBlank()) {
-				System.out.println("El nombre no puede estar vacío");
+		do {
+			nombre = pedirInput("Nombre: ");
+			instrumento = repositorio.buscarPorNombre(nombre);
+			if (instrumento != null) {
+			    System.out.println("Ya existe un instrumento con ese nombre");
 			}
-		}
+		} while (instrumento != null);
 
 		double precio = 0;
 		while (precio == 0) {
@@ -59,15 +67,14 @@ public class InstrumentoService {
 
 		TipoInstrumento tipo = null;
 		while (tipo == null) {
-			System.out.println("Tipo (ACCION o BONO): ");
-			String input = scanner.nextLine().toUpperCase();
+			String input = pedirInput("Nuevo tipo (ACCION O BONO): ").toUpperCase();
 			try {
 				tipo = TipoInstrumento.valueOf(input);
 
 				if (tipo == TipoInstrumento.ACCION) {
-					instrumentos.add(new Accion(nombre, precio, tipo));
+					repositorio.agregar(new Accion(nombre, precio, tipo));
 				} else if (tipo == TipoInstrumento.BONO) {
-					instrumentos.add(new Bono(nombre, precio, tipo));
+					repositorio.agregar(new Bono(nombre, precio, tipo));
 				}
 				System.out.println("Instrumento registrado");
 			} catch (IllegalArgumentException e) {
@@ -79,43 +86,35 @@ public class InstrumentoService {
 
 	public InstrumentoFinanciero consultarPorNombre() {
 		String nombre = pedirInput("Ingrese el nombre del instrumento a consultar:");
-		InstrumentoFinanciero instrumento = buscarInstrumento(nombre);
-		if (instrumento == null) {
-			System.out.println("No se encontró instrumento con nombre " + nombre);
-		}
-		return instrumento;
+		return repositorio.buscarPorNombre(nombre);
 	}
 
 	public void editarAtributo() {
-		String nombre = "";
 
-		while (nombre == "") {
-			System.out.println("Nombre del instrumento a editar: ");
-			nombre = scanner.nextLine();
-		}
+		String nombre = pedirInput("Nombre del instrumento a editar: ");
 
-		InstrumentoFinanciero instrumento = buscarInstrumento(nombre);
+		InstrumentoFinanciero instrumento = repositorio.buscarPorNombre(nombre);
 		if (instrumento == null) {
 			System.out.println("Instrumento no encontrado");
 			return;
 		}
 
-		String atributo = "";
-		while (atributo.isBlank()) {
-			System.out.println("Atributo a modificar (nombre, precio o tipo): ");
-			atributo = scanner.nextLine().toLowerCase();
-		}
+		String atributo = pedirInput("Atributo a modificar (nombre, precio o tipo): ").toLowerCase();
 
 		switch (atributo) {
 		case "nombre" -> {
-			String nuevoNombre = "";
-			do {
-				System.out.println("Nuevo nombre: ");
-				nuevoNombre = scanner.nextLine();
-			} while (nuevoNombre.isBlank());
-
-			instrumento.setNombre(nuevoNombre);
-			System.out.println("Nombre actualizado");
+			boolean existe = false;
+			while(!existe) {
+				String nuevoNombre = pedirInput("Nuevo nombre: ");
+				if (repositorio.buscarPorNombre(nuevoNombre) != null) {
+					System.out.println("Ya existe un instrumento con ese nombre. Intente nuevamente.");
+				} else {
+					instrumento.setNombre(nuevoNombre);
+					System.out.println("Nombre actualizado.");
+					existe = true;
+				}
+			}
+			
 		}
 		case "precio" -> {
 			double nuevoPrecio = 0;
@@ -123,20 +122,23 @@ public class InstrumentoService {
 				System.out.println("Nuevo precio: ");
 
 				try {
-					nuevoPrecio = Double.parseDouble(scanner.nextLine());
-					instrumento.setPrecio(nuevoPrecio);
-					System.out.println("Precio actualizado");
+				    nuevoPrecio = Double.parseDouble(scanner.nextLine());
+				    if (nuevoPrecio <= 0) {
+				        System.out.println("El precio debe ser mayor a cero");
+				    } else {
+				        instrumento.setPrecio(nuevoPrecio);
+				        System.out.println("Precio actualizado");
+				    }
 				} catch (NumberFormatException e) {
-					System.out.println("Precio inválido");
+				    System.out.println("Precio inválido");
 				}
 			} while (nuevoPrecio == 0);
 
 		}
 		case "tipo" -> {
 			TipoInstrumento nuevoTipo = null;
-			do {
-				System.out.print("Nuevo tipo (ACCION o BONO): ");
-				String input = scanner.nextLine().toUpperCase();
+			while (nuevoTipo == null) {
+				String input = pedirInput("Nuevo tipo (ACCION O BONO): ").toUpperCase();
 
 				try {
 					nuevoTipo = TipoInstrumento.valueOf(input);
@@ -145,35 +147,20 @@ public class InstrumentoService {
 				} catch (IllegalArgumentException e) {
 					System.out.println("Tipo inválido");
 				}
-			} while (nuevoTipo == null);
+			}
 		}
 		default -> System.out.println("Atributo no válido");
 		}
 	}
 
 	public void eliminar() {
-		String nombre = "";
-		do {
-			System.out.print("Ingrese nombre del instrumento a eliminar: ");
-			nombre = scanner.nextLine();
-
-			InstrumentoFinanciero instrumento = buscarInstrumento(nombre);
-			if (instrumento == null) {
-				System.out.println("Instrumento no encontrado");
-			} else {
-				instrumentos.remove(instrumento);
-				System.out.println("Instrumento eliminado");
-			}
-		} while (nombre.isBlank());
-	}
-
-	public InstrumentoFinanciero buscarInstrumento(String nombre) {
-		for (InstrumentoFinanciero i : instrumentos) {
-			if (i.getNombre().equalsIgnoreCase(nombre)) {
-				return i;
-			}
+		String nombre = pedirInput("Nombre del instrumento a eliminar: ");
+		boolean eliminado = repositorio.eliminarPorNombre(nombre);
+		if (eliminado) {
+			System.out.println("Instrumento eliminado correctamente");
+		} else {
+			System.out.println("No se encontró el instrumento");
 		}
-		return null;
 	}
 
 	public String pedirInput(String mensaje) {
